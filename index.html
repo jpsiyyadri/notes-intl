@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Text Generator</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light justify-content-center">
+        <a class="h1 text-dark" href="#">Intl Notes</a>
+    </nav>
+
+    <div class="container bg-primary text-white">
+        <div class="row mt-5">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="number">Enter a number</label>
+                    <input type="number" class="form-control" id="number" value="1234567.5678">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="locale">Select a locale</label>
+                    <select class="form-control" id="locale">
+                        <option value="en-US">English (United States)</option>
+                        <option value="hi-IN">Hindi (India)</option>
+                        <option value="ar-SA">Arabic (Saudi Arabia)</option>
+                        <option value="ja-JP">Japanese (Japan)</option>
+                        <option value="zh-CN">Chinese (China)</option>
+                        <option value="es-ES">Spanish (Spain)</option>
+                        <option value="fr-FR">French (France)</option>
+                        <option value="de-DE">German (Germany)</option>
+                        <!-- add telugu -->
+                        <option value="te-IN">Telugu (India)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="selectedOption">Selected Option</label>
+                    <select class="form-control" id="selectedOption">
+                        <option value="currency">Currency</option>
+                        <option value="decimal">Decimal</option>
+                        <option value="percent">Percent</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="decimal">Decimal Places</label>
+                    <input type="number" class="form-control" id="decimal" value="2">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="significant">Max significant figures</label>
+                    <input type="number" class="form-control" id="significant" value="2">
+
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="formattedNumber">Formatted Number</label>
+                    <p id="formattedNumber"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container bg-success text-white">
+        <div class="row mt-5">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="date">Choose date</label>
+                    <input type="date" class="form-control" id="date" value="2020-12-31">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="time">Choose time</label>
+                    <input type="time" class="form-control" id="time" value="12:00">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="localeDate">Select a locale</label>
+                    <select class="form-control" id="localeDate">
+                        <option value="en-US">English (United States)</option>
+                        <option value="hi-IN">Hindi (India)</option>
+                        <option value="ar-SA">Arabic (Saudi Arabia)</option>
+                        <option value="ja-JP">Japanese (Japan)</option>
+                        <option value="zh-CN">Chinese (China)</option>
+                        <option value="es-ES">Spanish (Spain)</option>
+                        <option value="fr-FR">French (France)</option>
+                        <option value="de-DE">German (Germany)</option>
+                        <!-- add telugu -->
+                        <option value="te-IN">Telugu (India)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="dateFormat">Date format</label>
+                    <select class="form-control" id="dateFormat">
+                        <option value="short">Short</option>
+                        <option value="medium">Medium</option>
+                        <option value="long">Long</option>
+                        <option value="full">Full</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="timeFormat">Time format</label>
+                    <select class="form-control" id="timeFormat">
+                        <option value="short">Short</option>
+                        <option value="medium">Medium</option>
+                        <option value="long">Long</option>
+                        <option value="full">Full</option>
+                    </select>
+                </div>
+
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="formattedDate">Formatted Date</label>
+                    <p id="formattedDate"></p>
+                </div>
+            </div>
+        </div>
+        <script>
+            const number = document.getElementById('number');
+            const locale = document.getElementById('locale');
+            const selectedOption = document.getElementById('selectedOption');
+            const decimal = document.getElementById('decimal');
+            const significant = document.getElementById('significant');
+
+            significant.addEventListener('input', () => {
+                generate_number();
+            });
+
+            decimal.addEventListener('input', () => {
+                generate_number();
+            });
+
+            selectedOption.addEventListener('change', () => {
+                generate_number();
+            });
+
+
+            number.addEventListener('input', () => {
+                generate_number();
+            });
+
+            locale.addEventListener('change', () => {
+                generate_number();
+            });
+
+            const currencyLocaleMap = {
+                'en-US': 'USD',
+                'hi-IN': 'INR',
+                'ar-SA': 'SAR',
+                'ja-JP': 'JPY',
+                'zh-CN': 'CNY',
+                'es-ES': 'EUR',
+                'fr-FR': 'EUR',
+                'de-DE': 'EUR',
+                'te-IN': 'INR'
+            };
+
+
+
+            function generate_number() {
+                const numberValue = number.value;
+                const localeValue = locale.value;
+                const decimalValue = decimal.value;
+                const selectedOptionValue = selectedOption.value;
+                const significantValue = significant.value;
+
+                const config = {
+                    minimumFractionDigits: decimalValue,
+                    maximumFractionDigits: decimalValue,
+                    maximumSignificantDigits: significantValue,
+                }
+
+
+                if (selectedOptionValue === 'currency') {
+                    config.style = 'currency';
+                    config.currency = currencyLocaleMap[localeValue];
+                }
+
+                const formattedNumber = new Intl.NumberFormat(
+                    localeValue,
+                    config
+                ).format(numberValue);
+
+                console.log(formattedNumber);
+                document.getElementById('formattedNumber').textContent = formattedNumber;
+            }
+
+            window.onload = function () {
+                generate_number();
+                generate_date();
+            }
+
+            const date = document.getElementById('date');
+            const time = document.getElementById('time');
+            const localeDate = document.getElementById('localeDate');
+            const dateFormat = document.getElementById('dateFormat');
+            const timeFormat = document.getElementById('timeFormat');
+
+            dateFormat.addEventListener('input', () => {
+                generate_date();
+            });
+
+            timeFormat.addEventListener('input', () => {
+                generate_date();
+            });
+
+
+            date.addEventListener('input', () => {
+                generate_date();
+            });
+
+            time.addEventListener('input', () => {
+                generate_date();
+            });
+
+            localeDate.addEventListener('change', () => {
+                generate_date();
+            });
+
+            function generate_date() {
+                const dateValue = date.value;
+                const timeValue = time.value;
+                const localeDateValue = localeDate.value;
+                const dateFormatValue = dateFormat.value;
+                const timeFormatValue = timeFormat.value;
+
+                const formattedDate = new Intl.DateTimeFormat(
+                    localeDateValue, {
+                    dateStyle: dateFormatValue,
+                    timeStyle: timeFormatValue
+                }
+                ).format(new Date(`${dateValue}T${timeValue}`));
+
+                console.log(formattedDate);
+                document.getElementById('formattedDate').textContent = formattedDate;
+
+            }
+        </script>
+</body>
+
+</html>
